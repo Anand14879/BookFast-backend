@@ -22,6 +22,10 @@ class User extends Authenticatable
         'email',
         'password',
     ];
+    //This code below makes it the User Class have a one-many relation with Bookings table
+    public function bookings(){
+        return $this->hasMany(Booking::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

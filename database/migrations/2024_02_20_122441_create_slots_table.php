@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table ->boolean('is_admin');
-            $table->rememberToken();
+        Schema::create('slots', function (Blueprint $table) {
+            $table->id(); // Primary key
+            $table->foreignId('facility_id')->constrained()->onDelete('cascade');
+            $table->boolean('is_available')->default(true);
+            $table->dateTime('date');
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('slots');
     }
 };
