@@ -11,7 +11,7 @@ class Facility extends Model
     use CrudTrait;
     use HasFactory;
 
-    // protected $primaryKey = 'Facility_ID';
+   
     protected $fillable =[
         'Name',
         'Location',
