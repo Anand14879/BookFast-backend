@@ -31,11 +31,23 @@ class UserController extends Controller
         }
     }
     }
+    // function login(Request $request){
+    //     $user = User::where('email', $request->email)-> first();
+    //     if (!$user || !Hash::check($request->password, $user->password)){
+    //         return ["error"=>"Email or password is not matched"];
+    //     }
+    //     return $user;
+    // }
+
     function login(Request $request){
-        $user = User::where('email', $request->email)-> first();
-        if (!$user || !Hash::check($request->password, $user->password)){
-            return ["error"=>"Email or password is not matched"];
-        }
-        return $user;
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        return response()->json(['error' => 'Invalid email or password.'], 401);
     }
+
+    // Return the user or a success response as needed
+    return $user;
 }
+}
+
