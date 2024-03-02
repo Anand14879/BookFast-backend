@@ -39,6 +39,7 @@ class FacilityCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        CRUD::column('id')->label('Facility ID');
         CRUD::setFromDb(); // set columns from db columns.
 
         /**

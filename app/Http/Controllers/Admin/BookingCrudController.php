@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\BookingRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+//  use Illuminate\Support\Facades\DB;
+ use Illuminate\Support\Facades\DB;
+ use App\Models\Booking;
+ use App\Models\Slot;
 
 /**
  * Class BookingCrudController
@@ -74,4 +78,48 @@ class BookingCrudController extends CrudController
     {
         $this->setupCreateOperation();
     }
+
+    public function destroy($id)
+{
+    // Check if the user has permission to delete
+    $this->crud->hasAccessOrFail('delete');
+
+    // Start a transaction to ensure both operations are completed or none are
+    DB::beginTransaction();
+    try {
+        // Get the booking entry
+        $booking = $this->crud->getEntry($id);
+
+        // Get the associated slot ID from the booking model
+        $slotId = $booking->slot_id; // Ensure this is the correct column name
+
+        // Update the slot to set is_available to true
+        Slot::where('id', $slotId)->update(['is_available' => true]);
+
+        // Use the parent delete operation from Backpack to handle the actual deletion
+        $response = $this->crud->delete($id);
+
+        // Commit the transaction
+        DB::commit();
+
+        // Add a success message to the session
+        \Alert::success('Booking deleted and slot availability updated.')->flash();
+        return $response;
+    } catch (\Throwable $e) {
+        // Roll back the transaction on any error
+        DB::rollBack();
+
+        // Log the error
+        \Log::error('Error occurred while deleting booking: ' . $e->getMessage());
+
+        // Add an error message to the session
+        \Alert::error('The booking could not be deleted.')->flash();
+
+        // If there is an error, respond with a redirect to the previous page
+        return back();
+    }
+}
+
+
+
 }
