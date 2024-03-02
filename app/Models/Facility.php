@@ -14,6 +14,7 @@ class Facility extends Model
    
     protected $fillable =[
         'Name',
+        'Institution_Name',
         'Location',
         'Description',
         'Capacity',

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('facilities', function (Blueprint $table) {
             $table->id(); //Primary Key
             $table->string('Name');
+            $table->string('Institution_Name');
             $table -> text('Location');
             $table -> text('Description')->nullable();
             $table->integer('Capacity');
@@ -21,6 +22,8 @@ return new class extends Migration
             $table -> decimal('Daily_Cost',8,2);
             $table -> string('Category');
             $table->timestamps();
+             // Adding the unique constraint
+            $table->unique(['Name','Institution_Name', 'Location', 'Category']);
         });
     }
 

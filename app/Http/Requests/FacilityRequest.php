@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class FacilityRequest extends FormRequest
@@ -25,7 +26,16 @@ class FacilityRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'name' => 'required|min:5|max:255'
+            'Name' => [
+            'required',
+            'min:5',
+            'max:255',
+            Rule::unique('facilities')->where(function ($query) {
+                return $query->where('Institution_Name', $this->Institution_Name)
+                             ->where('Location', $this->Location)
+                             ->where('Category', $this->Category);
+            }),
+        ],
         ];
     }
 
