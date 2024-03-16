@@ -11,10 +11,15 @@ use Illuminate\Support\Facades\Log; // Ensure this is imported
 
 class BookingController extends Controller
 {
-    public function index()
+    public function index($userId)
     {
-        $bookings = Booking::all();
-        return response()->json($bookings);
+        // $bookings = Booking::all();
+        // return response()->json($bookings);
+
+        $booking = Booking::where('user_id', $userId)
+                     ->get();
+
+        return response()->json($booking);
 
     }
 
