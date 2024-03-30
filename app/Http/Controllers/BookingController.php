@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Throwable;
 use App\Models\Slot;
 use App\Models\Booking;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -118,5 +119,38 @@ public function completeBookingStatus(Request $request)
         }
     }
 
+ public function deleteBooking($id)
+    {
+        // Use a transaction to ensure data integrity
+        DB::transaction(function () use ($id) {
+            $booking = Booking::findOrFail($id); // Find the booking or fail
+            $slotId = $booking->slot_id; // Assuming you have a `slot_id` column
+            
+            // Delete the booking
+            $booking->delete();
 
+            // Update the corresponding slot to available
+            $slot = Slot::findOrFail($slotId);
+            $slot->update(['is_available' => true]); // Assuming your slot table has an 'is_available' column
+        });
+
+        return response()->json(['message' => 'Booking deleted and slot updated to available.'], 200);
+    }
+
+    public function refundBooking($bookingId)
+    {
+        DB::transaction(function () use ($bookingId) {
+            $booking = Booking::findOrFail($bookingId);
+            $booking->status = 'Refunded';
+            $booking->save();
+
+            // Assuming each booking has a single payment associated with it
+            $payment = Payment::where('booking_id', $bookingId)->first();
+            if ($payment) {
+                $payment->delete();
+            }
+        });
+
+        return response()->json(['message' => 'Refund processed successfully.'], 200);
+    }
 }

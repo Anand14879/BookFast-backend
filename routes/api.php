@@ -6,6 +6,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\SlotController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\PaymentController;
+
 
 
 
@@ -34,4 +36,9 @@ Route::get('slots/{facilityId}', [SlotController::class, 'index']);
 Route::post('saveforlater', [BookingController::class, 'saveForLater']);
 Route::post('completebooking', [BookingController::class, 'completeBooking']);
 Route::post('completebookingstatus', [BookingController::class, 'completeBookingStatus']);
+Route::get('facility/details', [PaymentController::class, 'showFacilityDetails']);
+Route::post('payment/add', [PaymentController::class, 'addPayment']);
 
+Route::delete('booking/{id}', [BookingController::class, 'deleteBooking']);
+
+Route::post('booking/refund/{bookingId}', [BookingController::class, 'refundBooking']);
