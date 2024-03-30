@@ -7,7 +7,8 @@ use App\Models\Slot;
 use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log; // Ensure this is imported
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Response;
 
 class BookingController extends Controller
 {
@@ -96,7 +97,26 @@ class BookingController extends Controller
         return response()->json(['message' => 'Failed to complete the booking', 'error' => $e->getMessage()], 500);
     }
 }
+public function completeBookingStatus(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $booking = Booking::where('user_id', $request->user_id)
+                        ->where('facility_id', $request->facility_id)
+                        ->where('slot_id', $request->slot_id)
+                        ->firstOrFail(); // Changed to firstOrFail to throw an exception if not found
 
+            $booking->status = 'Booked';
+            $booking->save();
+
+            DB::commit();
+            return response()->json(['message' => 'Booking status updated to Booked', 'booking' => $booking], 200);
+        } catch (Throwable $e) {
+            DB::rollBack();
+            Log::error("Failed to update booking status: " . $e->getMessage());
+            return response()->json(['error' => 'Server error', 'exception' => $e->getMessage()], 500);
+        }
+    }
 
 
 }
