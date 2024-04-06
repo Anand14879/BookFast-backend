@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule; // Add this line
+use App\Models\Slot;
+
 
 class BookingRequest extends FormRequest
 {
@@ -25,7 +28,30 @@ class BookingRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'name' => 'required|min:5|max:255'
+            'user_id' => 'required|exists:users,id',
+            'facility_id' => 'required|exists:facilities,id',
+            'slot_id' => [
+                'required',
+                'exists:slots,id',
+                // Ensure the slot_id is unique for the facility_id and user_id except for the current booking id
+                Rule::unique('bookings')->where(function ($query) {
+                    return $query->where('facility_id', $this->facility_id)
+                                 ->where('user_id', $this->user_id);
+                })->ignore($this->id),
+
+                // Check if the slot is available
+                function ($attribute, $value, $fail) {
+                    $slot = Slot::where('id', $value)
+                                ->where('facility_id', $this->facility_id)
+                                ->where('is_available', true)
+                                ->first();
+                    
+                    if (!$slot) {
+                        $fail('The selected slot is not available for the specified facility.');
+                    }
+                },
+            ],
+            
         ];
     }
 

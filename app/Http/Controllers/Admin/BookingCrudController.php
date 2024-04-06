@@ -60,15 +60,10 @@ class BookingCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(BookingRequest::class);
-        CRUD::setFromDb(); // set fields from db columns.
-
-        /**
-         * Fields can be defined using the fluent syntax:
-         * - CRUD::field('price')->type('number');
-         */
+        CRUD::setFromDb(); // Set fields from the database
     }
 
-    /**
+      /**
      * Define what happens when the Update operation is loaded.
      * 
      * @see https://backpackforlaravel.com/docs/crud-operation-update
