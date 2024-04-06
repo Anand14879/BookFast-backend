@@ -7,6 +7,8 @@ use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\SlotController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ContactController;
+
 
 
 
@@ -42,3 +44,5 @@ Route::post('payment/add', [PaymentController::class, 'addPayment']);
 Route::delete('booking/{id}', [BookingController::class, 'deleteBooking']);
 
 Route::post('booking/refund/{bookingId}', [BookingController::class, 'refundBooking']);
+
+Route::post('contacts', [ContactController::class, 'store']);
