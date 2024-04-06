@@ -21,4 +21,17 @@ class SlotController extends Controller
 
         return response()->json($slots);
     }
+
+ public function show($id)
+    {
+        $sloot = Slot::find($id);
+
+        if ($sloot) {
+            return response()->json($sloot);
+        } else {
+            return response()->json(['message' => 'Slot not found'], 404);
+        }
+    }
+
+
 }

@@ -15,4 +15,15 @@ class FacilityController extends Controller
 
     }
 
+    public function show($id)
+    {
+        $facility = Facility::find($id);
+
+        if ($facility) {
+            return response()->json($facility);
+        } else {
+            return response()->json(['message' => 'Facility not found'], 404);
+        }
+    }
+
 }

@@ -46,3 +46,7 @@ Route::delete('booking/{id}', [BookingController::class, 'deleteBooking']);
 Route::post('booking/refund/{bookingId}', [BookingController::class, 'refundBooking']);
 
 Route::post('contacts', [ContactController::class, 'store']);
+
+Route::get('facilities/{id}', [FacilityController::class, 'show']);
+
+Route::get('slots/{id}', [SlotController::class, 'show']);
