@@ -39,6 +39,8 @@ class SlotCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        CRUD::column('id')->label('Slot ID');
+
         CRUD::setFromDb(); // set columns from db columns.
 
         /**

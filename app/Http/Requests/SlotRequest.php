@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class SlotRequest extends FormRequest
 {
@@ -23,11 +24,19 @@ class SlotRequest extends FormRequest
      * @return array
      */
     public function rules()
-    {
-        return [
-            // 'name' => 'required|min:5|max:255'
-        ];
-    }
+{
+    return [
+        'facility_id' => 'required|exists:facilities,id',
+        'date' => [
+            'required',
+        //    'date_format:m/d/Y h:i A', // Adjust the format to match your input
+            // Rule to ensure the date is unique for the given facility_id
+            Rule::unique('slots')->where(function ($query) {
+                return $query->where('facility_id', request()->input('facility_id'));
+            }),
+        ],
+    ];
+}
 
     /**
      * Get the validation attributes that apply to the request.
@@ -49,7 +58,8 @@ class SlotRequest extends FormRequest
     public function messages()
     {
         return [
-            //
+            'facility_id.required' => 'The facility field is required.',
+            'facility_id.exists' => 'The selected facility does not exist.',
         ];
     }
 }
