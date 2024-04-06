@@ -43,6 +43,7 @@ class BookingCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        CRUD::column('id')->label('Booking ID');
         CRUD::setFromDb(); // set columns from db columns.
 
         /**
