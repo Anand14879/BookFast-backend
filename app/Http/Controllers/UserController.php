@@ -17,6 +17,7 @@ class UserController extends Controller
         $user = new User;
         $user -> name=$request->input('name');
         $user -> email= $request->input('email');
+        $user -> phone = $request -> input('phone');
         $user -> password =Hash::make( $request -> input('password'));
         $user -> is_admin = 0;
         $user -> save();
@@ -31,13 +32,7 @@ class UserController extends Controller
         }
     }
     }
-    // function login(Request $request){
-    //     $user = User::where('email', $request->email)-> first();
-    //     if (!$user || !Hash::check($request->password, $user->password)){
-    //         return ["error"=>"Email or password is not matched"];
-    //     }
-    //     return $user;
-    // }
+
 
     function login(Request $request){
     $user = User::where('email', $request->email)->first();

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id(); // Primary key
             $table->foreignId('facility_id')->constrained()->onDelete('cascade');
             $table->boolean('is_available')->default(true);
-            $table->dateTime('date');
+            $table->date('date');
             $table->timestamps();
         });
     }

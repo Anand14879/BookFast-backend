@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone'
     ];
     //This code below makes it the User Class have a one-many relation with Bookings table
     public function bookings(){

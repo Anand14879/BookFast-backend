@@ -25,17 +25,18 @@ class SlotRequest extends FormRequest
      */
     public function rules()
 {
-    return [
-        'facility_id' => 'required|exists:facilities,id',
-        'date' => [
-            'required',
-        //    'date_format:m/d/Y h:i A', // Adjust the format to match your input
-            // Rule to ensure the date is unique for the given facility_id
-            Rule::unique('slots')->where(function ($query) {
-                return $query->where('facility_id', request()->input('facility_id'));
-            }),
-        ],
-    ];
+    return[
+            'facility_id' => 'required|exists:facilities,id',
+            'date' => [
+                'required',
+                'date',
+                'after_or_equal:today', // Ensure date is today or a future date
+                // Rule to ensure the date is unique for the given facility_id
+                Rule::unique('slots')->where(function ($query) {
+                    return $query->where('facility_id', request()->input('facility_id'));
+                }),
+            ],
+        ];
 }
 
     /**

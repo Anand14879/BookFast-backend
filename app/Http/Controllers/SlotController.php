@@ -24,10 +24,10 @@ class SlotController extends Controller
 
  public function show($id)
     {
-        $sloot = Slot::find($id);
+        $slots = Slot::find($id);
 
-        if ($sloot) {
-            return response()->json($sloot);
+        if ($slots) {
+            return response()->json($slots);
         } else {
             return response()->json(['message' => 'Slot not found'], 404);
         }
