@@ -5,3 +5,5 @@
 <x-backpack::menu-item title="Bookings" icon="la la-question" :link="backpack_url('booking')" />
 <x-backpack::menu-item title="Slots" icon="la la-question" :link="backpack_url('slot')" />
 <x-backpack::menu-item title="Payments" icon="la la-question" :link="backpack_url('payment')" />
+<x-backpack::menu-item title="Users" icon="la la-question" :link="backpack_url('user')" />
+{{-- <x-backpack::menu-item title="Dashboard controllers" icon="la la-question" :link="backpack_url('dashboard-controller')" /> --}}
