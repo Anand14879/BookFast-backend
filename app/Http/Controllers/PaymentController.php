@@ -59,58 +59,97 @@ class PaymentController extends Controller
         return response()->json($payment, 201);
     }
 
-     public function initiatePayment(Request $request)
-    {
-        \Log::info('Incoming Request', ['request' => $request->all()]);
-        $validatedData = $request->validate([
-            'bookingId' => 'required',
-            'amount' => 'required|integer',
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'phone' => 'required|string',
-        ]);
-       
+//      public function initiatePayment(Request $request)
+// {
+//     \Log::info('Incoming Request', ['request' => $request->all()]);
+//     $validatedData = $request->validate([
+//         'bookingId' => 'required',
+//         'amount' => 'required|integer',
+//         'name' => 'required|string',
+//         // 'email' => 'required|email',
+//         // 'phone' => 'required|string',
+//     ]);
 
-        $khaltiSecretKey = env('KHALTI_SECRET_KEY'); //It is stored in the env file
-        $khaltiPublicKey = env('KHALTI_PUBLIC_KEY'); //It is stored in the env file
+//     $khaltiSecretKey = env('KHALTI_SECRET_KEY');
+//     $khaltiPublicKey = env('KHALTI_PUBLIC_KEY');
 
-        \Log::info('Khalti Public Key', ['key' => env('KHALTI_PUBLIC_KEY')]);
-        \Log::info('Khalti Secret Key', ['key' => env('KHALTI_SECRET_KEY')]);
+//     \Log::info('Khalti Public Key', ['key' => $khaltiPublicKey]);
+//     \Log::info('Khalti Secret Key', ['key' => $khaltiSecretKey]);
+
+//     $response = Http::withHeaders([
+//         'Authorization' => 'Key ' . $khaltiSecretKey,
+//         'Content-Type' => 'application/json',
+//     ])->post('https://a.khalti.com/api/v2/epayment/initiate/', [
+//         // 'public_key' => $khaltiPublicKey,
+//         // 'mobile' => $validatedData['phone'],
+//         'purchase_order_id' => 'BookingID' . $validatedData['bookingId'],
+//         'purchase_order_name' => 'Booking Payment for ' . $validatedData['name'],
+//         // 'transaction_pin' => '1111', // This should be obtained securely and not hardcoded
+//         'amount' => $validatedData['amount'] * 100,
+//         'return_url' => 'http://127.0.0.1:3000/bookings',
+//         'website_url' => 'http://127.0.0.1:3000/home',
+//         // 'customer_info' => [
+//         //     'name' => $validatedData['name'],
+//         //     'email' => $validatedData['email'],
+//         //     'phone' => $validatedData['phone'],
+//         // ],
+//     ]);
+
+//     if ($response->successful()) {
+//         return response()->json($response->json(), 200);
+//     } else {
+//         \Log::error('Khalti Payment initiation failed', [
+//             'response' => $response->json(),
+//             'status_code' => $response->status(),
+//         ]);
+//         return response()->json(['error' => 'Failed to initiate payment', 'details' => $response->json()], $response->status());
+//     }
+// }
 
 
-
-     $response = Http::withHeaders([
-    'Authorization' => 'Bearer ' . $khaltiSecretKey, // Changed from 'Key' to 'Bearer'
-    'Content-Type' => 'application/json',
-])->post('https://a.khalti.com/api/v2/payment/initiate/', [ // Make sure this is the correct URL
-    'public_key' => $khaltiPublicKey,
-    'mobile' => '9840016420',
-    'product_identity' => 'BookingID' . $validatedData['bookingId'],
-    'product_name' => 'Booking Payment for ' . $validatedData['name'],
-    'transaction_pin' => '987654', // This should be obtained securely and not hardcoded
-    'amount' => $validatedData['amount'] * 100, // Amount in paisa
-    'return_url' => 'http://127.0.0.1:3000/bookings',
-    'website_url' => 'http://127.0.0.1:3000/home',
-    'customer_info' => [
-        'name' => $validatedData['name'],
-        'email' => $validatedData['email'],
-        'phone' => $validatedData['phone']
-    ]
-]);
-
-
-
-
-        if ($response->successful()) {
-        return response()->json($response->json(), 200);
-        } else {
-            \Log::error('Khalti Payment initiation failed', [
-              'response' => $response->body()
+//Second attempt
+public function initiatePayment(Request $request)
+{
+    \Log::info('Incoming Request', ['request' => $request->all()]);
+    $validatedData = $request->validate([
+        'bookingId' => 'required',
+        'amount' => 'required|integer|min:1',
+        'name' => 'required|string',
+        'email' => 'sometimes|required|email',
+        'phone' => 'sometimes|required|string',
     ]);
-    return response()->json(['error' => 'Failed to initiate payment', 'details' => $response->json()], $response->status());
-}
 
+    $khaltiSecretKey = env('KHALTI_SECRET_KEY');
+
+    \Log::info('Khalti Secret Key', ['key' => $khaltiSecretKey]);
+
+    $response = Http::withHeaders([
+        'Authorization' => 'Key ' . $khaltiSecretKey, // API Authorization 
+        'Content-Type' => 'application/json',
+    ])->post('https://a.khalti.com/api/v2/epayment/initiate/', [
+        'purchase_order_id' => 'BookingID' . $validatedData['bookingId'],
+        'purchase_order_name' => 'Booking Payment for ' . $validatedData['name'],
+        'amount' => $validatedData['amount'] * 100, // Convert amount to Paisa
+        'return_url' => 'http://127.0.0.1:3000/bookings',
+        'website_url' => 'http://127.0.0.1:3000/home',
+        // 'mobile'=>$validatedData['phone'],
+          'customer_info' => [
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'phone' => $validatedData['phone'],
+        ],
+    ]);
+
+    if ($response->successful()) {
+        return response()->json($response->json(), 200);
+    } else {
+        \Log::error('Khalti Payment initiation failed', [
+            'response' => $response->json(),
+            'status_code' => $response->status(),
+        ]);
+        return response()->json(['error' => 'Failed to initiate payment', 'details' => $response->json()], $response->status());
     }
+}
 
 
 
