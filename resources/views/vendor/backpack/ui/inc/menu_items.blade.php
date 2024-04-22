@@ -7,3 +7,4 @@
 <x-backpack::menu-item title="Payments" icon="la la-question" :link="backpack_url('payment')" />
 <x-backpack::menu-item title="Users" icon="la la-question" :link="backpack_url('user')" />
 {{-- <x-backpack::menu-item title="Dashboard controllers" icon="la la-question" :link="backpack_url('dashboard-controller')" /> --}}
+<x-backpack::menu-item title="Contacts" icon="la la-question" :link="backpack_url('contact')" />

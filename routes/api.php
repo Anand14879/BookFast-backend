@@ -33,7 +33,9 @@ Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
 
 Route::get('facilities', [FacilityController::class, 'index']);
+
 Route::get('bookings/{userId}', [BookingController::class, 'index']);
+
 Route::get('slots/{facilityId}', [SlotController::class, 'index']);
 Route::post('saveforlater', [BookingController::class, 'saveForLater']);
 Route::post('completebooking', [BookingController::class, 'completeBooking']);
